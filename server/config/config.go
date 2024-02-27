@@ -6,6 +6,8 @@ import (
 
 	"github.com/spf13/viper"
 
+	"cosmossdk.io/store/cache"
+	"cosmossdk.io/store/iavl"
 	pruningtypes "cosmossdk.io/store/pruning/types"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
@@ -77,6 +79,8 @@ type BaseConfig struct {
 
 	// InterBlockCache enables inter-block caching.
 	InterBlockCache bool `mapstructure:"inter-block-cache"`
+	// InterBlockCacheSize set the size of the inter-block cache.
+	InterBlockCacheSize uint `mapstructure:"inter-block-cache-size"`
 
 	// IndexEvents defines the set of events in the form {eventType}.{attributeKey},
 	// which informs CometBFT what to index. If empty, all events will be indexed.
@@ -222,12 +226,13 @@ func DefaultConfig() *Config {
 			MinGasPrices:        defaultMinGasPrices,
 			QueryGasLimit:       0,
 			InterBlockCache:     true,
+			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
 			Pruning:             pruningtypes.PruningOptionDefault,
 			PruningKeepRecent:   "0",
 			PruningInterval:     "0",
 			MinRetainBlocks:     0,
 			IndexEvents:         make([]string, 0),
-			IAVLCacheSize:       781250,
+			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
 			IAVLDisableFastNode: false,
 			AppDBBackend:        "",
 		},

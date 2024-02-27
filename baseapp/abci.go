@@ -347,18 +347,32 @@ func (app *BaseApp) CheckTx(req *abci.RequestCheckTx) (*abci.ResponseCheckTx, er
 		return nil, fmt.Errorf("unknown RequestCheckTx type: %s", req.Type)
 	}
 
-	gInfo, result, anteEvents, err := app.runTx(mode, req.Tx)
+	gInfo, result, anteEvents, tx, err := app.runTx(mode, req.Tx)
 	if err != nil {
 		return sdkerrors.ResponseCheckTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, anteEvents, app.trace), nil
 	}
 
 	return &abci.ResponseCheckTx{
-		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
-		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
-		Log:       result.Log,
-		Data:      result.Data,
-		Events:    sdk.MarkEventsToIndex(result.Events, app.indexEvents),
+		GasWanted:  int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
+		GasUsed:    int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
+		Log:        result.Log,
+		Data:       result.Data,
+		Events:     sdk.MarkEventsToIndex(result.Events, app.indexEvents),
+		IsOracleTx: isOracleTx(tx.GetMsgs()),
 	}, nil
+}
+
+func isOracleTx(msgs []sdk.Msg) bool {
+	for _, msg := range msgs {
+		if sdk.MsgTypeURL(msg) == "/terra.oracle.v1beta1.MsgAggregateExchangeRatePrevote" ||
+			sdk.MsgTypeURL(msg) == "/terra.oracle.v1beta1.MsgAggregateExchangeRateVote" {
+			continue
+		} else {
+			return false
+		}
+	}
+
+	return true
 }
 
 // PrepareProposal implements the PrepareProposal ABCI method and returns a

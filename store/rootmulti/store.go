@@ -37,7 +37,7 @@ const (
 	commitInfoKeyFmt = "s/%d" // s/<version>
 )
 
-const iavlDisablefastNodeDefault = false
+const iavlDisablefastNodeDefault = true
 
 // keysFromStoreKeyMap returns a slice of keys for the provided map lexically sorted by StoreKey.Name()
 func keysFromStoreKeyMap[V any](m map[types.StoreKey]V) []types.StoreKey {

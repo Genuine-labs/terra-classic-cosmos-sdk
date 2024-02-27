@@ -203,6 +203,8 @@ replace (
 	// We always want to test against the latest version of the simapp.
 	cosmossdk.io/simapp => ../simapp
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
+	// use terra classic cometbft
+	github.com/cometbft/cometbft => github.com/Genuine-labs/terra-classic-cometbft v0.38.0-rc3.0.20240226103345-836ef145ba54
 	// We always want to test against the latest version of the SDK.
 	github.com/cosmos/cosmos-sdk => ../.
 	// Fix upstream GHSA-h395-qcrw-5vmq and GHSA-3vp4-m3rf-835h vulnerabilities.
